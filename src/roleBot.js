@@ -51,7 +51,8 @@ var yearIDs = {
 };
 
 var programIDs = {
-
+    sauder: "282382735882977290",
+    science: "282382712642338817"
 };
 
 var currentUserID;
@@ -75,7 +76,7 @@ bot.on('ready', () => {
 // create an event listener for messages
 bot.on('message', message => {
 // filter for user response
-    const filter = message => message.content.match(/^\d$/);
+    const filter = message => message.content.match(/^\d+$/);
 
 if (message.content[0] === '!') {
     var parsedMessage = message.content.split(" ");
@@ -87,7 +88,7 @@ if (message.content[0] === '!') {
             //  console.log(channel);
             bot.channels.get("282277372609429504").awaitMessages(filter, {max: 1, time: 30000, errors: ['time']})
                 .then(collected => {
-                assignYear(collected.first().toString(), message)
+                assignYear(collected.first().toString(), message);
             message.reply("If you want your program/faculty added to your user, please user the !program command.")})
         .catch(collected => message.reply(`You didn't respond, did you end up going to SFU? \nIn any case, I'm returning to standby.`));
             break;
@@ -98,8 +99,7 @@ if (message.content[0] === '!') {
                 "\n 1) Arts \n 2) Architecture \n 3) Biopsychology \n 4) Computer Science \n 5) Engineering \n 6) Kinesiology \n 7) LFS \n 8) Music" +
                 "\n 9) Pharmacy \n 10) Political Science \n 11) Sauder \n 12) Science \n 13) My faculty/program isn't listed");
             bot.channels.get("282277372609429504").awaitMessages(filter, {max: 1, time: 30000, errors: ['time']})
-                .then(collected => {
-                assignProgram(collected.first().toString(), message)})
+                .then(collected => assignProgram(collected.first().toString(), message))
         .catch(collected => message.reply(`You didn't respond, did you end up going to Langara? \nIn any case, I'm returning to standby.`));
             break;
         }
@@ -152,7 +152,8 @@ function assignYear(year, message){
 }
 
 function assignProgram(program, message){
-    switch(year){
+    console.log('hi');
+    switch(program){
         case '1':
             message.reply("Arts, eh? Tired of writing essays yet?");
             message.member.addRole(programIDs['arts']);
@@ -199,11 +200,10 @@ function assignProgram(program, message){
             break;
         case '12':
             message.reply("Science, eh? Sorry there's no pre-med option!");
-            message.member.addRole(programIDs['seventh']);
+            message.member.addRole(programIDs['science']);
             break;
         case '13':
             message.reply("Clearly your faculty/program isn't good enough. Kidding aside, just let one of the mods know and it'll eventually get added.");
-            message.member.addRole(programIDs['seventh']);
             break;
         default:
             message.reply("Sorry, please input a value from 1 to 13.");
