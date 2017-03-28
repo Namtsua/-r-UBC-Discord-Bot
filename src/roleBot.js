@@ -1,38 +1,40 @@
 
 // import the discord.js module
+
+var config = require('./config');
 const Discord = require('discord.js');
 
 // create an instance of a Discord Client, and call it bot
 const bot = new Discord.Client();
 
 // the token of your bot - https://discordapp.com/developers/applications/me
-const token = 'MjgyMDE0NDEyMTU4Nzk1Nzg2.C4kROQ.p6nFyT7rpc5QFEvz3c53ULFrMaw';
+const token = config.TOKEN;
 
 
 var yearIDs = {
-    alumni: "280085913382551554",
-    first: "275881487738601475",
-    second: "275881588137525248",
-    third: "275881602154758144",
-    fourth: "275881611680153600",
-    fifth: "275881621507538945",
-    sixth: "275881638771294208",
-    seventh: "275881649294671872"
+    alumni: config.ALUMNI,
+    first: config.FIRSTYEAR,
+    second: config.SECONDYEAR,
+    third: config.THIRDYEAR,
+    fourth: config.FOURTHYEAR,
+    fifth: config.FIFTHYEAR,
+    sixth: config.SIXTHYEAR,
+    seventh: config.SEVENTHYEAR
 };
 
 var programIDs = {
-    arts: "275877649199661056",
-    architecture: "276145995782422528",
-    biospsychology: "280104705932394496",
-    computerscience: "275897810564415488",
-    engineering: "275877766753288192",
-    kinesiology: "275878916693164032",
-    lfs: "275881139170836481",
-    music: "275881225967632385",
-    pharmacy: "276241227102289920",
-    poliscience: "279147501892796416",
-    sauder: "275877687594057729",
-    science: "275877745052090370"
+    arts: config.ARTS,
+    architecture: config.ARCHITECTURE,
+    biospsychology: config.BIOPSYCHOLOGY,
+    computerscience: config.COMPUTERSCIENCE,
+    engineering: config.ENGINEERING,
+    kinesiology: config.KINESIOLOGY,
+    lfs: config.LFS,
+    music: config.MUSIC,
+    pharmacy: config.PHARMACY,
+    poliscience: config.POLISCIENCE,
+    sauder: config.SAUDER,
+    science: config.SCIENCE
 };
 
 var yearUserBase = {
@@ -52,13 +54,11 @@ bot.on('ready', () => {
 bot.on('message', message => {
 // filter for user response
     const filter = message => message.content.match(/^\d+$/);
-// 282277372609429504 <- mine
-//  282389811275497473 <- ubc
-if (message.content[0] === '!' && (message.author.id === "275874563198287873" || message.channel.id === "278002373803114496")) {
-     if (message.author.id === "228349219700736001"){
+if (message.content[0] === '!' && (message.author.id === config.NAMTSUA || message.channel.id === config.BOTCOMMANDSCHANNEL)) {
+     if (message.author.id === config.BAUSMANGO){
         message.reply("Congrats! You have been successfully transferred to Sprott Shaw Community College.");
          return;
-     } else if (message.author.id === "191819447919443968"){
+     } else if (message.author.id === config.BURROWL){
          message.reply("Talk to me when your taste in music improves.");
      }
     var parsedMessage = message.content.split(" ");
@@ -66,7 +66,7 @@ if (message.content[0] === '!' && (message.author.id === "275874563198287873" ||
         case '!year': {
             // Check if user can set role
             message.reply("OK, let's give you a role! What year are you in? \n(Type 0 for Alumni or a number from 1 to 7 corresponding to your standing.)");
-            bot.channels.get("278002373803114496").awaitMessages(filter, {max: 1, time: 60000, errors: ['time']})
+            bot.channels.get(config.BOTCOMMANDSCHANNEL).awaitMessages(filter, {max: 1, time: 60000, errors: ['time']})
                 .then(collected => {
                 assignYear(collected.first().toString(), message);})
         .catch(collected => message.reply(`You didn't respond, did you end up going to SFU? \nIn any case, I'm returning to standby.`));
@@ -77,7 +77,7 @@ if (message.content[0] === '!' && (message.author.id === "275874563198287873" ||
                 "\n You can choose from the following, simply type the correspond number: " +
                 "\n 1) Arts \n 2) Architecture \n 3) Biopsychology \n 4) Computer Science \n 5) Engineering \n 6) Kinesiology \n 7) LFS \n 8) Music" +
                 "\n 9) Pharmacy \n 10) Political Science \n 11) Sauder \n 12) Science \n 13) My faculty/program isn't listed");
-            bot.channels.get("278002373803114496").awaitMessages(filter, {max: 1, time: 60000, errors: ['time']})
+            bot.channels.get(config.BOTCOMMANDSCHANNEL).awaitMessages(filter, {max: 1, time: 60000, errors: ['time']})
                 .then(collected => assignProgram(collected.first().toString(), message))
         .catch(collected => message.reply(`You didn't respond, did you end up going to Langara? \nIn any case, I'm returning to standby.`));
             break;
