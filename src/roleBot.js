@@ -35,7 +35,11 @@ var programIDs = {
     science: "275877745052090370"
 };
 
-var userBase = {
+var yearUserBase = {
+    test: 0
+};
+
+var programUserBase = {
     test: 0
 };
 
@@ -43,7 +47,6 @@ var userBase = {
 // from Discord _after_ ready is emitted.
 bot.on('ready', () => {
     console.log('I am ready!');
-    bot.channels.get("278002373803114496").sendMessage("Hello everyone, I'm back!");
 });
 // create an event listener for messages
 bot.on('message', message => {
@@ -51,11 +54,13 @@ bot.on('message', message => {
     const filter = message => message.content.match(/^\d+$/);
 // 282277372609429504 <- mine
 //  282389811275497473 <- ubc
-if (message.content[0] === '!') {
-    // if (message.author.id === "228349219700736001"){
-    //    message.reply("Sorry, I'm going to have to transfer you to Douglas College");
-    //     return;
-    // }
+if (message.content[0] === '!' && (message.author.id === "275874563198287873" || message.channel.id === "278002373803114496")) {
+     if (message.author.id === "228349219700736001"){
+        message.reply("Congrats! You have been successfully transferred to Sprott Shaw Community College.");
+         return;
+     } else if (message.author.id === "191819447919443968"){
+         message.reply("Talk to me when your taste in music improves.");
+     }
     var parsedMessage = message.content.split(" ");
     switch (parsedMessage[0]) {
         case '!year': {
@@ -89,15 +94,15 @@ if (message.content[0] === '!') {
 }});
 
 function assignYear(year, message){
-    if (checkLimit(message.author.id, message))
+    if (checkYearLimit(message.author.id, message))
         return;
     switch(year){
         case '0':
             message.reply("What are you doing here? Just kidding, anyone UBC-related is welcome.");
-            message.member.addRole("282302608524443658");
+            message.member.addRole(yearIDs['alumni']);
             break;
         case '1':
-            message.reply("Welcome to UBC! I hpe you are enjoying your first year.");
+            message.reply("Welcome to UBC! I hope you are enjoying your first year.");
             message.member.addRole(yearIDs['first']);
             break;
         case '2':
@@ -132,7 +137,7 @@ function assignYear(year, message){
 }
 
 function assignProgram(program, message){
-    if (checkLimit(message.author.id, message))
+    if (checkProgramLimit(message.author.id, message))
         return;
     switch(program){
         case '1':
@@ -191,15 +196,25 @@ function assignProgram(program, message){
     }
 }
 
-function checkLimit(userID, message){
+function checkYearLimit(userID, message){
     var currentDate = Date.now();
-    if (userBase.hasOwnProperty(userID) && (currentDate - userBase[userID]  <= 3600000)){
-        message.reply("Sorry, you've hit your limit. Hope you're Santasfied! \n Please try again in " + Math.floor((3600000 - (currentDate - userBase[userID]))/60000) + " minutes.");
+    if (yearUserBase.hasOwnProperty(userID) && (currentDate - yearUserBase[userID]  <= 3600000)){
+        message.reply("Sorry, you've hit your limit. Hope you're Santasfied! \n Please try again in " + Math.floor((3600000 - (currentDate - yearUserBase[userID]))/60000) + " minutes.");
         return true;
     }else
-        userBase[userID] = currentDate;
+        yearUserBase[userID] = currentDate;
     return false;
 }
 
+
+function checkProgramLimit(userID, message){
+    var currentDate = Date.now();
+    if (programUserBase.hasOwnProperty(userID) && (currentDate - programUserBase[userID]  <= 3600000)){
+        message.reply("Sorry, you've hit your limit. Hope you're Santasfied! \n Please try again in " + Math.floor((3600000 - (currentDate - programUserBase[userID]))/60000) + " minutes.");
+        return true;
+    }else
+        programUserBase[userID] = currentDate;
+    return false;
+}
 // log our bot in
 bot.login(token);
