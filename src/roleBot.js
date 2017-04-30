@@ -25,7 +25,7 @@ var yearIDs = {
 var programIDs = {
     arts: config.ARTS,
     architecture: config.ARCHITECTURE,
-    biospsychology: config.BIOPSYCHOLOGY,
+    biopsychology: config.BIOPSYCHOLOGY,
     computerscience: config.COMPUTERSCIENCE,
     engineering: config.ENGINEERING,
     kinesiology: config.KINESIOLOGY,
@@ -49,6 +49,18 @@ var programUserBase = {
 // from Discord _after_ ready is emitted.
 bot.on('ready', () => {
     console.log('I am ready!');
+});
+
+// Greet new users to the Discord server
+bot.on('guildMemberAdd',(user) => {
+    console.log("testing this");
+    bot.channels.get(config.GENERAL).sendMessage("\\ <:ce_ono:" + config.ONOWELCOMEEMOTE + "> / Welcome to UBC <@" + user.id + "> ! \\ <:ce_ono:" + config.ONOWELCOMEEMOTE + "> /");
+});
+
+// Let everyone know who left
+bot.on('guildMemberRemove', (user) => {
+    console.log("also, testing this");
+    bot.channels.get(config.GENERAL).sendMessage("Have fun at SFU <@" + user.id + "> <:ce_ono:" + config.ONOYEDEMOTE + "> <:ce_ono:" + config.ONOYEDEMOTE + "> <:ce_ono:" + config.ONOYEDEMOTE + "> ");
 });
 // create an event listener for messages
 bot.on('message', message => {
@@ -83,10 +95,13 @@ if (message.content[0] === '!' && (message.author.id === config.NAMTSUA || messa
             break;
         }
         case '!help':
-            message.reply("Currently only the !year, !program and !ams commands are supported, bug Namtsua if you want another feature to be added.");
+            message.reply("Currently only the !year, !program, !ams and !youtube commands are supported, bug Namtsua if you want another feature to be added.");
             break;
         case '!ams':
             message.reply("http://streamable.com/gbqjv");
+            break;
+        case "!youtube":
+            message.reply("Check out my Youtube channel! https://www.youtube.com/channel/UC8KGT0uZ19f6XJPUwxlvzPQ");
             break;
         default:
             message.reply("Sorry, I don't recognize that command. Please use !help to view all valid commands.")
@@ -94,8 +109,8 @@ if (message.content[0] === '!' && (message.author.id === config.NAMTSUA || messa
 }});
 
 function assignYear(year, message){
-    if (checkYearLimit(message.author.id, message))
-        return;
+   // if (checkYearLimit(message.author.id, message))
+     //   return;
     switch(year){
         case '0':
             message.reply("What are you doing here? Just kidding, anyone UBC-related is welcome.");
@@ -129,6 +144,10 @@ function assignYear(year, message){
             message.reply("Thanks. I see you can't get enough of UBC, but you can't stay forever!");
             message.member.addRole(yearIDs['seventh']);
             break;
+        case '8':
+            message.reply("OK");
+            message.member.addRole('282308075438866433');
+            break;
         default:
             message.reply("Sorry, please input a value from 0 to 7");
             break;
@@ -137,8 +156,8 @@ function assignYear(year, message){
 }
 
 function assignProgram(program, message){
-    if (checkProgramLimit(message.author.id, message))
-        return;
+  //  if (checkProgramLimit(message.author.id, message))
+   //     return;
     switch(program){
         case '1':
             message.reply("Arts, eh? Tired of writing essays yet?");
@@ -189,7 +208,7 @@ function assignProgram(program, message){
             message.member.addRole(programIDs['science']);
             break;
         case '13':
-            message.reply("Clearly your faculty/program isn't good enough. Kidding aside, just let one of the mods know and it'll eventually get added.");
+            message.reply("Clearly your faculty/program isn't good enough. Kidding aside, I'll let <@" + config.NAMTSUA + "> know and it'll eventually get added.");
             break;
         default:
             message.reply("Sorry, please input a value from 1 to 13.");
@@ -198,8 +217,11 @@ function assignProgram(program, message){
 
 function checkYearLimit(userID, message){
     var currentDate = Date.now();
-    if (yearUserBase.hasOwnProperty(userID) && (currentDate - yearUserBase[userID]  <= 3600000)){
-        message.reply("Sorry, you've hit your limit. Hope you're Santasfied! \n Please try again in " + Math.floor((3600000 - (currentDate - yearUserBase[userID]))/60000) + " minutes.");
+    console.log(yearUserBase[userID]);
+    if (yearUserBase.hasOwnProperty(userID) && (currentDate - yearUserBase[userID]  <= 600000)){
+        var timeLeft = Math.floor((600000 - (currentDate - yearUserBase[userID]))/60000);
+        message.reply("Sorry, you've hit your limit. Hope you're Santasfied! \n Please try again in " + timeLeft + " minutes.");
+        yearUserBase[userID] = timeLeft;
         return true;
     }else
         yearUserBase[userID] = currentDate;
@@ -209,8 +231,10 @@ function checkYearLimit(userID, message){
 
 function checkProgramLimit(userID, message){
     var currentDate = Date.now();
-    if (programUserBase.hasOwnProperty(userID) && (currentDate - programUserBase[userID]  <= 3600000)){
-        message.reply("Sorry, you've hit your limit. Hope you're Santasfied! \n Please try again in " + Math.floor((3600000 - (currentDate - programUserBase[userID]))/60000) + " minutes.");
+    if (programUserBase.hasOwnProperty(userID) && (currentDate - programUserBase[userID]  <= 600000)){
+        var timeLeft = Math.floor((600000 - (currentDate - yearUserBase[userID]))/60000);
+        message.reply("Sorry, you've hit your limit. Hope you're Santasfied! \n Please try again in " + timeLeft + " minutes.");
+        programUserBase[userID] = timeLeft;
         return true;
     }else
         programUserBase[userID] = currentDate;
