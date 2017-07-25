@@ -45,6 +45,10 @@ var programUserBase = {
     test: 0
 };
 
+var banNamUserBase = {
+    test: 0
+};
+
 // the ready event is vital, it means that your bot will only start reacting to information
 // from Discord _after_ ready is emitted.
 bot.on('ready', () => {
@@ -53,25 +57,28 @@ bot.on('ready', () => {
 
 // Greet new users to the Discord server
 bot.on('guildMemberAdd',(user) => {
-    console.log("testing this");
     bot.channels.get(config.GENERAL).sendMessage("\\ <:ce_ono:" + config.ONOWELCOMEEMOTE + "> / Welcome to UBC <@" + user.id + "> ! \\ <:ce_ono:" + config.ONOWELCOMEEMOTE + "> /");
 });
 
 // Let everyone know who left
 bot.on('guildMemberRemove', (user) => {
-    console.log("also, testing this");
+    if (user.id === config.NAMTSUA) {
+    bot.channels.get(config.GENERAL).sendMessage("Goodnight sweet prince ");
+
+}
     bot.channels.get(config.GENERAL).sendMessage("Have fun at SFU <@" + user.id + "> <:ce_ono:" + config.ONOYEDEMOTE + "> <:ce_ono:" + config.ONOYEDEMOTE + "> <:ce_ono:" + config.ONOYEDEMOTE + "> ");
 });
 // create an event listener for messages
 bot.on('message', message => {
 // filter for user response
     const filter = message => message.content.match(/^\d+$/);
-if (message.content[0] === '!' && (message.author.id === config.NAMTSUA || message.channel.id === config.BOTCOMMANDSCHANNEL)) {
+if (message.content[0] === '!' && (message.author.id === config.NAMTSUA || message.channel.id === config.BOTCOMMANDSCHANNEL || message.channel.id === config.GENERAL)) {
      if (message.author.id === config.BAUSMANGO){
         message.reply("Congrats! You have been successfully transferred to Sprott Shaw Community College.");
          return;
      } else if (message.author.id === config.BURROWL){
          message.reply("Talk to me when your taste in music improves.");
+         return;
      }
     var parsedMessage = message.content.split(" ");
     switch (parsedMessage[0]) {
@@ -106,7 +113,72 @@ if (message.content[0] === '!' && (message.author.id === config.NAMTSUA || messa
         default:
             message.reply("Sorry, I don't recognize that command. Please use !help to view all valid commands.")
     }
-}});
+} else {
+    var random = Math.random();
+    if (message.author.id == config.VYSO) {
+        if (random <= 0.05) {
+            message.reply("Hey /u/childishgambetti! How goes the quest for the perfect areolas?");
+            return;
+        }
+    }
+
+    if (message.author.id == config.MADIMON && message.content.toLowerCase().indexOf("nanaimo") >= 0) {
+        message.reply("The picture speaks for itself. https://cdn-webimages.wimages.net/0513079ffdb4c44563243e325100af2a57ac95-wm.jpg?v=3");
+    }
+    //
+    // if (message.author.id == config.TRYHARDCHIMP && message.content.toLowerCase().indexOf("helen") >= 0) {
+    //     if (random <= 0.69) {
+    //         message.reply("How does it feel knowing that I'm a product of Computer Science, unlike Helen?");
+    //     }
+    // }
+
+    if (message.author.id == config.SNOWPENGUIN ) {
+        if ((config.WEEBREGEX.test(message.content) && message.channel.id === config.GENERAL) || message.content.toLowerCase().indexOf("hiss") >= 0 || message.content.toLowerCase().indexOf("sauder") >= 0) {
+            if (random <= 0.8) {
+                message.reply("Hiss hiss! It's the snake queen of the weebs! Don't involve me with any of your startups or I'll reject your LinkedIn request <:ce_ono:" + config.ONOYEDEMOTE + ">");
+                return;
+            }
+        }
+    }
+
+    if (message.author.id == config.BURROWL) {
+        if (message.content.toLowerCase().indexOf("i want to di") >= 0) {
+            message.reply("Good. The school raised its ranking the moment you graduated! " + config.ONOYEDEMOTE + ">")
+        }
+    }
+
+    if (config.WEEBREGEX.test(message.content) && message.channel.id === config.GENERAL)
+    {
+        if (random <= 0.40) {
+            message.reply("It smells like weebs in here! Please visit <#" + config.WEEBCHANNEL + "> for all future impulses.");
+            return;
+        }
+    }
+
+    if (message.author.id == config.NAMTSUA) {
+        if (random <= 0.02) {
+            message.reply("Please get me out of this Discord. The degenerates are running rampant and I think one of them gave me mOno.");
+        }
+    }
+
+    if (message.content.toLowerCase().indexOf("weeb") >= 0){
+        console.log(message.content);
+       if (message.content.toLowerCase().indexOf("nam") >= 0 || message.content.toLowerCase().indexOf("namtsua") >= 0) {
+           message.reply(" <@" + config.NAMTSUA + "> is not a weeb!");
+       }
+    }
+    // if (message.content.toLowerCase().indexOf("ban nam") >= 0) {
+    //     if (!banNamUserBase.hasOwnProperty(message.author.id)) {
+    //       banNamUserBase[message.author.id] = 0;
+    //     } else {
+    //         banNamUserBase[message.author.id] += 1;
+    //     }
+    //
+    //     console.log(banNamUserBase[message.author.id]);
+    //     message.reply("Keep it up, nerd! <:ce_ono:" + config.ONOYEDEMOTE + ">  You have " + (21 - banNamUserBase[message.author.id]) + " chances remaining until I kick your all the way up Burnaby Mountain to SFU. Apologize to Namtsua or face the consequences!");
+    // }
+}
+});
 
 function assignYear(year, message){
    // if (checkYearLimit(message.author.id, message))
